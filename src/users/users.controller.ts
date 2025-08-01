@@ -1,10 +1,12 @@
 import {
   Controller,
+  Body,
   DefaultValuePipe,
   Get,
   Param,
   ParseIntPipe,
   Query,
+  Post,
 } from '@nestjs/common';
 
 @Controller('users')
@@ -16,5 +18,10 @@ export class UsersController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
   ) {
     return `Hello User ${id} ${limit} ${page}`;
+  }
+
+  @Post()
+  createUser(@Body() body: any) {
+    return `Hello User ${JSON.stringify(body)}`;
   }
 }
