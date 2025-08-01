@@ -7,9 +7,11 @@ import {
   ParseIntPipe,
   Query,
   Post,
+  Patch,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersParamDto } from './dtos/get-users-param.dto';
+import { PatchUserDto } from './dtos/patch-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -25,5 +27,10 @@ export class UsersController {
   @Post()
   createUser(@Body() createUserDto: CreateUserDto) {
     return `Hello User ${JSON.stringify(createUserDto)}`;
+  }
+
+  @Patch()
+  patchUser(@Body() patchUserDto: PatchUserDto) {
+    return `Hello User ${JSON.stringify(patchUserDto)}`;
   }
 }
