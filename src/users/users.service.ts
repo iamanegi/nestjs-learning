@@ -8,7 +8,7 @@ export class UsersService {
     limit: number,
     page: number,
   ) {
-    console.log('findAll', getUsersParamDto, limit, page);
+    console.log(getUsersParamDto, limit, page);
     return [
       {
         id: 1,
@@ -23,7 +23,7 @@ export class UsersService {
     ];
   }
 
-  public findOneById(id: number) {
+  public findOneById(id: string) {
     console.log('findOneById', id);
     return {
       id: 1,
