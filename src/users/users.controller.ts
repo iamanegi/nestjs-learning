@@ -49,7 +49,7 @@ export class UsersController {
 
   @Post()
   createUser(@Body() createUserDto: CreateUserDto) {
-    return `Hello User ${JSON.stringify(createUserDto)}`;
+    return this.usersService.createUser(createUserDto);
   }
 
   @Patch()
