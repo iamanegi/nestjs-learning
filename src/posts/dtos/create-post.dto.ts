@@ -10,10 +10,11 @@ import {
   IsISO8601,
   IsArray,
   ValidateNested,
+  MaxLength,
 } from 'class-validator';
 import { PostType } from '../enums/post-type.enum';
 import { PostStatus } from '../enums/post-status.enum';
-import { CreatePostMetaOptionsDto } from './create-post-meta-options.dto';
+import { CreatePostMetaOptionsDto } from '../../meta-options/dtos/create-post-meta-options.dto';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -25,6 +26,7 @@ export class CreatePostDto {
   })
   @IsString()
   @MinLength(4)
+  @MaxLength(100)
   @IsNotEmpty()
   title: string;
 
@@ -39,6 +41,7 @@ export class CreatePostDto {
   })
   @IsString()
   @IsNotEmpty()
+  @MaxLength(256)
   @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
     message:
       'Slug must be in lowercase and contain only letters, numbers and "-".',
@@ -71,6 +74,7 @@ export class CreatePostDto {
     example: 'https://example.com/image.jpg',
   })
   @IsOptional()
+  @MaxLength(256)
   @IsUrl()
   featuredImageUrl?: string;
 
