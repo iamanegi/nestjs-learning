@@ -30,7 +30,11 @@ export class PostsService {
   public async findAll(userId: number) {
     const user = this.usersService.findOneById(userId);
     console.log(user);
-    return await this.postsRepository.find();
+    return await this.postsRepository.find({
+      relations: {
+        author: true,
+      },
+    });
   }
 
   public async delete(id: number) {
