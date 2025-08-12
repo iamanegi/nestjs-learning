@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -27,5 +28,6 @@ export class MetaOption {
   updatedOn: Date;
 
   @OneToOne(() => Post, (post) => post.metaOptions)
+  @JoinColumn()
   post: Post;
 }
