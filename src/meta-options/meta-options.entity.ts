@@ -27,7 +27,9 @@ export class MetaOption {
   @UpdateDateColumn({ name: 'updated_on' })
   updatedOn: Date;
 
-  @OneToOne(() => Post, (post) => post.metaOptions)
+  @OneToOne(() => Post, (post) => post.metaOptions, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   post: Post;
 }
