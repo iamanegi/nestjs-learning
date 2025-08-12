@@ -14,11 +14,20 @@ export class PostsService {
   ) {}
 
   public async create(createPostDto: CreatePostDto) {
-    const post = this.postsRepository.create(createPostDto);
+    const author = await this.usersService.findOneById(createPostDto.authorId);
+
+    if (!author) {
+      return { message: 'Invalid author' };
+    }
+
+    const post = this.postsRepository.create({
+      ...createPostDto,
+      author: author,
+    });
     return await this.postsRepository.save(post);
   }
 
-  public async findAll(userId: string) {
+  public async findAll(userId: number) {
     const user = this.usersService.findOneById(userId);
     console.log(user);
     return await this.postsRepository.find();
