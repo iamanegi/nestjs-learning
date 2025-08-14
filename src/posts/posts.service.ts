@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Post } from './post.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagsService } from 'src/tags/tags.service';
+import { UpdatePostDto } from './dtos/update-post.dto';
 
 @Injectable()
 export class PostsService {
@@ -31,6 +32,30 @@ export class PostsService {
       author: author,
       tags: tags,
     });
+    return await this.postsRepository.save(post);
+  }
+
+  public async update(updatePostDto: UpdatePostDto) {
+    const tags = updatePostDto.tagIds
+      ? await this.tagsService.findAllById(updatePostDto.tagIds)
+      : undefined;
+    const post = await this.postsRepository.findOneBy({ id: updatePostDto.id });
+
+    if (!post) {
+      return { message: 'Invalid post' };
+    }
+
+    // update the values
+    post.title = updatePostDto.title ?? post?.title;
+    post.content = updatePostDto.content ?? post?.content;
+    post.status = updatePostDto.status ?? post?.status;
+    post.postType = updatePostDto.postType ?? post?.postType;
+    post.slug = updatePostDto.slug ?? post?.slug;
+    post.featuredImageUrl =
+      updatePostDto.featuredImageUrl ?? post?.featuredImageUrl;
+    post.publishOn = updatePostDto.publishOn ?? post?.publishOn;
+    post.tags = tags ?? post?.tags;
+
     return await this.postsRepository.save(post);
   }
 
