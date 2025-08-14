@@ -82,9 +82,9 @@ export class Post {
   })
   publishOn?: Date;
 
-  @ManyToMany(() => Tag, {
+  @ManyToMany(() => Tag, (tag) => tag.posts, {
     eager: true, // can also be set at service level in relations block of find method
-  })
+  }) // cascading works automatically on the owning side due to join table
   @JoinTable()
   tags?: Tag[];
 
