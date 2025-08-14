@@ -82,16 +82,20 @@ export class Post {
   })
   publishOn?: Date;
 
-  @ManyToMany(() => Tag)
+  @ManyToMany(() => Tag, {
+    eager: true, // can also be set at service level in relations block of find method
+  })
   @JoinTable()
   tags?: Tag[];
 
   @OneToOne(() => MetaOption, (metaOption) => metaOption.post, {
     cascade: true,
-    eager: true,
+    // eager: true, // can also be set at service level in relations block of find method
   })
   metaOptions?: MetaOption;
 
-  @ManyToOne(() => User, (user) => user.posts) // the foriegn key will lie here
+  @ManyToOne(() => User, (user) => user.posts, {
+    eager: true, // can also be set at service level in relations block of find method
+  }) // the foriegn key will lie here
   author: User;
 }

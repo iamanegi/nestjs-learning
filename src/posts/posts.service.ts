@@ -39,7 +39,9 @@ export class PostsService {
     console.log(user);
     return await this.postsRepository.find({
       relations: {
-        author: true,
+        metaOptions: true, // can also be set at entity level while defining the relationship
+        // author: true, // can also be set at entity level while defining the relationship
+        // tags: true, // can also be set at entity level while defining the relationship
       },
     });
   }
