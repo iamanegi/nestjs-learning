@@ -4,11 +4,13 @@ import { CreatePostDto } from './dtos/create-post.dto';
 import { Repository } from 'typeorm';
 import { Post } from './post.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { TagsService } from 'src/tags/tags.service';
 
 @Injectable()
 export class PostsService {
   constructor(
     private readonly usersService: UsersService,
+    private readonly tagsService: TagsService,
     @InjectRepository(Post)
     private readonly postsRepository: Repository<Post>,
   ) {}
@@ -20,9 +22,14 @@ export class PostsService {
       return { message: 'Invalid author' };
     }
 
+    const tags = createPostDto.tagIds
+      ? await this.tagsService.findAllById(createPostDto.tagIds)
+      : undefined;
+
     const post = this.postsRepository.create({
       ...createPostDto,
       author: author,
+      tags: tags,
     });
     return await this.postsRepository.save(post);
   }

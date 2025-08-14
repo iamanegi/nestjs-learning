@@ -10,7 +10,7 @@ Content-Type: application/json
   "schema": "{\"key\":\"value\"}",
   "featuredImageUrl": "https://example.com/image.jpg",
   "publishOn": "2021-01-01T00:00:00.000Z",
-  "tags": ["tag1", "tag2"],
+  "tagIds": [1, 2],
   "metaOptions": {
     "metaValue": "{\"sidebarEnabled\": true, \"footerActive\": true}"
   },
