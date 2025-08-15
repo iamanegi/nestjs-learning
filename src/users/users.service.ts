@@ -5,6 +5,8 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
+import { ConfigType } from '@nestjs/config';
+import userConfig from './config/user.config';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +15,8 @@ export class UsersService {
     private readonly authService: AuthService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @Inject(userConfig.KEY)
+    private readonly userConfiguration: ConfigType<typeof userConfig>,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
@@ -35,6 +39,8 @@ export class UsersService {
   ) {
     const isAuthenticated = this.authService.isAuthenticated();
     console.log(getUsersParamDto, limit, page, isAuthenticated);
+    const secret = this.userConfiguration.apiKey;
+    console.log(secret);
     return [
       {
         id: 1,
