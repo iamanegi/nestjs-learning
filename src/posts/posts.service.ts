@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  RequestTimeoutException,
+} from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { CreatePostDto } from './dtos/create-post.dto';
 import { Repository } from 'typeorm';
@@ -6,6 +11,7 @@ import { Post } from './post.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TagsService } from 'src/tags/tags.service';
 import { UpdatePostDto } from './dtos/update-post.dto';
+import { Tag } from 'src/tags/tag.entity';
 
 @Injectable()
 export class PostsService {
@@ -36,13 +42,31 @@ export class PostsService {
   }
 
   public async update(updatePostDto: UpdatePostDto) {
-    const tags = updatePostDto.tagIds
-      ? await this.tagsService.findAllById(updatePostDto.tagIds)
-      : undefined;
-    const post = await this.postsRepository.findOneBy({ id: updatePostDto.id });
+    let tags: Tag[] | null = null;
+    try {
+      tags = updatePostDto.tagIds
+        ? await this.tagsService.findAllById(updatePostDto.tagIds)
+        : null;
+    } catch {
+      throw new RequestTimeoutException('Error connecting to database');
+    }
+
+    if (tags && tags.length !== updatePostDto.tagIds?.length) {
+      throw new BadRequestException('One or more tag ids are invalid.');
+    }
+
+    let post: Post | null = null;
+
+    try {
+      post = await this.postsRepository.findOneBy({
+        id: updatePostDto.id,
+      });
+    } catch {
+      throw new RequestTimeoutException('Error connecting to database');
+    }
 
     if (!post) {
-      return { message: 'Invalid post' };
+      throw new NotFoundException('Post not found with specified id.');
     }
 
     // update the values
@@ -56,7 +80,11 @@ export class PostsService {
     post.publishOn = updatePostDto.publishOn ?? post?.publishOn;
     post.tags = tags ?? post?.tags;
 
-    return await this.postsRepository.save(post);
+    try {
+      return await this.postsRepository.save(post);
+    } catch {
+      throw new RequestTimeoutException('Error connecting to database');
+    }
   }
 
   public async findAll(userId: number) {
