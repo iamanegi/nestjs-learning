@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { TagsService } from './tags.service';
 import { CreateTagDto } from './dtos/create-tag.dto';
+import { CreateManyTagDto } from './dtos/create-many-tag.dto';
 
 @Controller('tags')
 export class TagsController {
@@ -16,6 +17,11 @@ export class TagsController {
   @Post()
   public async create(@Body() createTagDto: CreateTagDto) {
     return this.tagsService.create(createTagDto);
+  }
+
+  @Post('create-many')
+  public async createMany(@Body() createManyTagDto: CreateManyTagDto) {
+    return this.tagsService.createMany(createManyTagDto);
   }
 
   @Delete()

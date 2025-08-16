@@ -2,14 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { CreateTagDto } from './dtos/create-tag.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from './tag.entity';
-import { DataSource, In, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
+import { TagsCreateManyProvider } from './provider/tags-create-many.provider';
+import { CreateManyTagDto } from './dtos/create-many-tag.dto';
 
 @Injectable()
 export class TagsService {
   constructor(
     @InjectRepository(Tag)
     private readonly tagsRepository: Repository<Tag>,
-    private readonly dataSource: DataSource,
+    private readonly tagsCreateManyProvider: TagsCreateManyProvider,
   ) {}
 
   public async create(createTagDto: CreateTagDto) {
@@ -17,24 +19,8 @@ export class TagsService {
     return await this.tagsRepository.save(tag);
   }
 
-  public async createMany(createTagsDto: CreateTagDto[]) {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    const newTags: Tag[] = [];
-    try {
-      for (const createTagDto of createTagsDto) {
-        const newTag = queryRunner.manager.create(Tag, createTagDto);
-        const result = await queryRunner.manager.save(newTag);
-        newTags.push(result);
-      }
-      await queryRunner.commitTransaction();
-    } catch {
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
-    }
+  public async createMany(createManyTagDto: CreateManyTagDto) {
+    return await this.tagsCreateManyProvider.createMany(createManyTagDto);
   }
 
   public async findAllById(ids: number[]) {

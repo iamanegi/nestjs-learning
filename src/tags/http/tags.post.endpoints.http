@@ -8,3 +8,29 @@ Content-Type: application/json
   "schema": "{\"key\":\"value\"}",
   "featuredImageUrl": "https://example.com/image.jpg"
 }
+
+
+
+
+
+POST http://localhost:3000/tags/create-many
+Content-Type: application/json
+
+{
+  "tags": [
+    {
+      "name": "Javascript",
+      "slug": "javascript",
+      "description": "Javascript description",
+      "schema": "{\"key\":\"value\"}",
+      "featuredImageUrl": "https://example.com/image.jpg"
+    },
+        {
+      "name": "Typescript",
+      "slug": "typescript",
+      "description": "Typescript description",
+      "schema": "{\"key\":\"value\"}",
+      "featuredImageUrl": "https://example.com/image.jpg"
+    }
+  ]
+}
