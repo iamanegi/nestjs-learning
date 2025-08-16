@@ -1,6 +1,8 @@
 import {
   BadRequestException,
   forwardRef,
+  HttpException,
+  HttpStatus,
   Inject,
   Injectable,
   NotFoundException,
@@ -55,22 +57,18 @@ export class UsersService {
     limit: number,
     page: number,
   ) {
-    const isAuthenticated = this.authService.isAuthenticated();
-    console.log(getUsersParamDto, limit, page, isAuthenticated);
-    const secret = this.userConfiguration.apiKey;
-    console.log(secret);
-    return [
+    throw new HttpException(
       {
-        id: 1,
-        name: 'John Doe',
-        email: 'john.doe@example.com',
+        status: HttpStatus.MOVED_PERMANENTLY,
+        error: 'The endpoint is moved permanently',
+        updated_endpoint: 'v1/user',
       },
+      HttpStatus.MOVED_PERMANENTLY,
       {
-        id: 2,
-        name: 'Alice Smith',
-        email: 'alice.smith@example.com',
+        cause: new Error(),
+        description: 'Occurred due API endpoint deprecation',
       },
-    ];
+    );
   }
 
   public async findOneById(id: number) {
