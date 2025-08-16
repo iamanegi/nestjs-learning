@@ -1,4 +1,11 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+  RequestTimeoutException,
+} from '@nestjs/common';
 import { GetUsersParamDto } from './dtos/get-users-param.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { User } from './user.entity';
@@ -20,15 +27,26 @@ export class UsersService {
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
-    const existingUser = await this.userRepository.findOne({
-      where: { email: createUserDto.email },
-    });
+    let existingUser: User | null = null;
+
+    try {
+      existingUser = await this.userRepository.findOne({
+        where: { email: createUserDto.email },
+      });
+    } catch {
+      throw new RequestTimeoutException('Error connecting to database');
+    }
+
     if (existingUser) {
-      return existingUser;
+      throw new BadRequestException('Email is already registered.');
     }
 
     let newUser = this.userRepository.create(createUserDto);
-    newUser = await this.userRepository.save(newUser);
+    try {
+      newUser = await this.userRepository.save(newUser);
+    } catch {
+      throw new RequestTimeoutException('Error connecting to database');
+    }
     return newUser;
   }
 
@@ -56,6 +74,15 @@ export class UsersService {
   }
 
   public async findOneById(id: number) {
-    return await this.userRepository.findOneBy({ id: id });
+    let user: User | null = null;
+    try {
+      user = await this.userRepository.findOneBy({ id: id });
+    } catch {
+      throw new RequestTimeoutException('Error connecting to database');
+    }
+    if (!user) {
+      throw new NotFoundException('User not found with specified id.');
+    }
+    return user;
   }
 }
