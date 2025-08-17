@@ -13,12 +13,14 @@ import { TagsService } from 'src/tags/tags.service';
 import { UpdatePostDto } from './dtos/update-post.dto';
 import { Tag } from 'src/tags/tag.entity';
 import { GetPostsDto } from './dtos/get-posts.dto';
+import { PaginationProvider } from 'src/common/pagination/providers/pagination.provider';
 
 @Injectable()
 export class PostsService {
   constructor(
     private readonly usersService: UsersService,
     private readonly tagsService: TagsService,
+    private readonly paginationProvider: PaginationProvider,
     @InjectRepository(Post)
     private readonly postsRepository: Repository<Post>,
   ) {}
@@ -91,15 +93,22 @@ export class PostsService {
   public async findAll(userId: number, getPostsDto: GetPostsDto) {
     const user = this.usersService.findOneById(userId);
     console.log(user);
-    return await this.postsRepository.find({
-      relations: {
-        metaOptions: true, // can also be set at entity level while defining the relationship
-        // author: true, // can also be set at entity level while defining the relationship
-        // tags: true, // can also be set at entity level while defining the relationship
+    // return await this.postsRepository.find({
+    //   relations: {
+    //     metaOptions: true, // can also be set at entity level while defining the relationship
+    //     // author: true, // can also be set at entity level while defining the relationship
+    //     // tags: true, // can also be set at entity level while defining the relationship
+    //   },
+    //   skip: (getPostsDto.page - 1) * getPostsDto.limit,
+    //   take: getPostsDto.limit,
+    // });
+    return this.paginationProvider.paginateQuery(
+      {
+        page: getPostsDto.page,
+        limit: getPostsDto.limit,
       },
-      skip: (getPostsDto.page - 1) * getPostsDto.limit,
-      take: getPostsDto.limit,
-    });
+      this.postsRepository,
+    );
   }
 
   public async delete(id: number) {
