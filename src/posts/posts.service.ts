@@ -12,6 +12,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TagsService } from 'src/tags/tags.service';
 import { UpdatePostDto } from './dtos/update-post.dto';
 import { Tag } from 'src/tags/tag.entity';
+import { GetPostsDto } from './dtos/get-posts.dto';
 
 @Injectable()
 export class PostsService {
@@ -87,7 +88,7 @@ export class PostsService {
     }
   }
 
-  public async findAll(userId: number) {
+  public async findAll(userId: number, getPostsDto: GetPostsDto) {
     const user = this.usersService.findOneById(userId);
     console.log(user);
     return await this.postsRepository.find({
@@ -96,6 +97,8 @@ export class PostsService {
         // author: true, // can also be set at entity level while defining the relationship
         // tags: true, // can also be set at entity level while defining the relationship
       },
+      skip: (getPostsDto.page - 1) * getPostsDto.limit,
+      take: getPostsDto.limit,
     });
   }
 
