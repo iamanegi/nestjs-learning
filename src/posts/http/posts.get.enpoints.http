@@ -1,1 +1,12 @@
+{{
+    const date = new Date();
+    exports.startDate = new Date(date.setDate(date.getDate() - 7));
+    exports.endDate = new Date();
+
+}}
+
 GET http://localhost:3000/posts/1
+    ?startDate={{startDate}}
+    &endDate={{endDate}}
+    &limit=10
+    &page=1
