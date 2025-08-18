@@ -32,12 +32,12 @@ export class User {
   email: string;
 
   @Column({
-    name: 'password',
+    name: 'password_hash',
     type: 'varchar',
-    length: 50,
+    length: 255,
     nullable: false,
   })
-  password: string;
+  passwordHash: string;
 
   @OneToMany(() => Post, (post) => post.author)
   posts: Post[];
