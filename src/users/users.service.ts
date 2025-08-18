@@ -16,6 +16,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { ConfigType } from '@nestjs/config';
 import userConfig from './config/user.config';
+import { CreateUserProvider } from './provider/create-user.provider';
 
 @Injectable()
 export class UsersService {
@@ -26,30 +27,11 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
     @Inject(userConfig.KEY)
     private readonly userConfiguration: ConfigType<typeof userConfig>,
+    private readonly createUserProvider: CreateUserProvider,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
-    let existingUser: User | null = null;
-
-    try {
-      existingUser = await this.userRepository.findOne({
-        where: { email: createUserDto.email },
-      });
-    } catch {
-      throw new RequestTimeoutException('Error connecting to database');
-    }
-
-    if (existingUser) {
-      throw new BadRequestException('Email is already registered.');
-    }
-
-    let newUser = this.userRepository.create(createUserDto);
-    try {
-      newUser = await this.userRepository.save(newUser);
-    } catch {
-      throw new RequestTimeoutException('Error connecting to database');
-    }
-    return newUser;
+    return this.createUserProvider.createUser(createUserDto);
   }
 
   public findAll(
