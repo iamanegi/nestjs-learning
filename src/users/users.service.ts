@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   forwardRef,
   HttpException,
   HttpStatus,
@@ -17,6 +16,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { ConfigType } from '@nestjs/config';
 import userConfig from './config/user.config';
 import { CreateUserProvider } from './provider/create-user.provider';
+import { FindOneUserByEmail } from './provider/find-one-user-by-email.provider';
 
 @Injectable()
 export class UsersService {
@@ -28,6 +28,7 @@ export class UsersService {
     @Inject(userConfig.KEY)
     private readonly userConfiguration: ConfigType<typeof userConfig>,
     private readonly createUserProvider: CreateUserProvider,
+    private readonly findOneUserByEmail: FindOneUserByEmail,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
@@ -64,5 +65,9 @@ export class UsersService {
       throw new NotFoundException('User not found with specified id.');
     }
     return user;
+  }
+
+  public async fineOneByEmail(email: string) {
+    return this.findOneUserByEmail.findOneByEmail(email);
   }
 }
