@@ -14,9 +14,10 @@ import databaseConfig from './config/database.config';
 import environmentValidation from './config/environment.validation';
 import jwtConfig from './auth/config/jwt.config';
 import { JwtModule } from '@nestjs/jwt';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AccessTokenGuard } from './auth/guards/access-token/access-token.guard';
 import { AuthGuard } from './auth/guards/auth/auth.guard';
+import { DataResponseInterceptor } from './common/interceptors/data-response.interceptor';
 
 const ENV = process.env.NODE_ENV;
 
@@ -58,6 +59,10 @@ const ENV = process.env.NODE_ENV;
   providers: [
     AppService,
     { provide: APP_GUARD, useClass: AuthGuard },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: DataResponseInterceptor,
+    },
     AccessTokenGuard,
   ],
 })
