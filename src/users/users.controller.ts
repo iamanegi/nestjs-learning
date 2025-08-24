@@ -8,6 +8,8 @@ import {
   Query,
   Post,
   Patch,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersParamDto } from './dtos/get-users-param.dto';
@@ -39,6 +41,7 @@ export class UsersController {
     description: 'Page number',
     example: 1,
   })
+  @UseInterceptors(ClassSerializerInterceptor)
   getUsers(
     @Param() getUsersParamDto: GetUsersParamDto,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,

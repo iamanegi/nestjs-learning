@@ -1,7 +1,5 @@
 import {
   forwardRef,
-  HttpException,
-  HttpStatus,
   Inject,
   Injectable,
   NotFoundException,
@@ -45,18 +43,10 @@ export class UsersService {
     limit: number,
     page: number,
   ) {
-    throw new HttpException(
-      {
-        status: HttpStatus.MOVED_PERMANENTLY,
-        error: 'The endpoint is moved permanently',
-        updated_endpoint: 'v1/user',
-      },
-      HttpStatus.MOVED_PERMANENTLY,
-      {
-        cause: new Error(),
-        description: 'Occurred due API endpoint deprecation',
-      },
-    );
+    return this.userRepository.find({
+      skip: (page - 1) * limit,
+      take: limit,
+    });
   }
 
   public async findOneById(id: number) {
