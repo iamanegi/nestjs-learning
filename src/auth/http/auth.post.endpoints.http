@@ -5,3 +5,13 @@ Content-Type: application/json
   "email": "john.doe@example.com",
   "password": "abc@1234"
 }
+
+
+
+
+POST http://localhost:3000/auth/refresh-tokens
+Content-Type: application/json
+
+{
+  "refreshToken": ""
+}
