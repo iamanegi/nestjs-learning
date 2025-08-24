@@ -16,7 +16,10 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { ConfigType } from '@nestjs/config';
 import userConfig from './config/user.config';
 import { CreateUserProvider } from './provider/create-user.provider';
-import { FindOneUserByEmail } from './provider/find-one-user-by-email.provider';
+import { FindOneUserByEmailProvider } from './provider/find-one-user-by-email.provider';
+import { FindOneUserByGoogleIdProvider } from './provider/find-one-user-by-google-id.provider';
+import { CreateGoogleUserProvider } from './provider/create-google-user.provider';
+import { GoogleUser } from './interfaces/google-user.interface';
 
 @Injectable()
 export class UsersService {
@@ -28,7 +31,9 @@ export class UsersService {
     @Inject(userConfig.KEY)
     private readonly userConfiguration: ConfigType<typeof userConfig>,
     private readonly createUserProvider: CreateUserProvider,
-    private readonly findOneUserByEmail: FindOneUserByEmail,
+    private readonly findOneUserByEmailProvider: FindOneUserByEmailProvider,
+    private readonly findOneUserByGoogleIdProvider: FindOneUserByGoogleIdProvider,
+    private readonly createGoogleUserProvider: CreateGoogleUserProvider,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
@@ -68,6 +73,14 @@ export class UsersService {
   }
 
   public async fineOneByEmail(email: string) {
-    return this.findOneUserByEmail.findOneByEmail(email);
+    return this.findOneUserByEmailProvider.execute(email);
+  }
+
+  public async findOneByGoogleId(googleId: string) {
+    return this.findOneUserByGoogleIdProvider.execute(googleId);
+  }
+
+  public async createGoogleUser(googleUser: GoogleUser) {
+    return this.createGoogleUserProvider.createGoogleUser(googleUser);
   }
 }

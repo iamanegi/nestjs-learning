@@ -8,13 +8,13 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
-export class FindOneUserByEmail {
+export class FindOneUserByEmailProvider {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  public async findOneByEmail(email: string) {
+  public async execute(email: string) {
     let user: User | null = null;
 
     try {

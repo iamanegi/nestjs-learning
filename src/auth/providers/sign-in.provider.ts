@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   forwardRef,
   Inject,
   Injectable,
@@ -21,6 +22,12 @@ export class SingInProvider {
 
   public async signIn(signInDto: SignInDto) {
     const user = await this.usersService.fineOneByEmail(signInDto.email);
+
+    if (user?.passwordHash === undefined) {
+      throw new BadRequestException(
+        'User has no password set, please sign in with Google',
+      );
+    }
 
     let isPasswordCorrect: boolean = false;
 
