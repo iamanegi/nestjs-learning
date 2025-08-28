@@ -2,4 +2,5 @@ onlyBuiltDependencies:
   - '@compodoc/compodoc'
   - '@nestjs/core'
   - '@scarf/scarf'
+  - aws-sdk
   - bcrypt
