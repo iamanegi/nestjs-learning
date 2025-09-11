@@ -11,8 +11,6 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { ConfigType } from '@nestjs/config';
-import userConfig from './config/user.config';
 import { CreateUserProvider } from './provider/create-user.provider';
 import { FindOneUserByEmailProvider } from './provider/find-one-user-by-email.provider';
 import { FindOneUserByGoogleIdProvider } from './provider/find-one-user-by-google-id.provider';
@@ -26,8 +24,6 @@ export class UsersService {
     private readonly authService: AuthService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @Inject(userConfig.KEY)
-    private readonly userConfiguration: ConfigType<typeof userConfig>,
     private readonly createUserProvider: CreateUserProvider,
     private readonly findOneUserByEmailProvider: FindOneUserByEmailProvider,
     private readonly findOneUserByGoogleIdProvider: FindOneUserByGoogleIdProvider,
